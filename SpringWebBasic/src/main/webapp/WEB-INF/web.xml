@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee https://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+
+	<!-- mvc와 관련된 스프링 설정 파일의 위치를 저장하는 태그 (= 설정 불러라!) -->
+	<context-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/spring/root-context.xml</param-value>
+	</context-param>
+	
+	<!-- 스프링 프로젝트가 가동을 시작하면서, listener가 생성되어 동작하고,
+        위에 선언된 root-context.xml을 모든 서블릿에서 공유할 수 있도록 <- Q. 공유? 모든클래스에서 공유 할 수 있으면  머엿지 public? 아닌데 get과 post인가
+        스프링 설정 파일로 초기 선언 -->
+	<listener>
+		<listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+	</listener>
+
+	<!-- 디스패쳐 서블릿을 appServlet으로 선언하고, 초기 파라미터로
+		스프링 설정 파일의 위치를 선언. (Servlet-context.xml)
+		우선 순위도 지정해서 가장 먼저 생성될 수 있도록 설정. -->
+	<servlet>
+		<servlet-name>appServlet</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/spring/appServlet/servlet-context.xml</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+		
+	<!-- 위에 선언된 appServlet을 모든 경로에 대해 맵핑 처리. -->
+	<servlet-mapping>
+		<servlet-name>appServlet</servlet-name>
+		<!-- 이라는 이름으로 dispatcherServlet이 생성되면서 맵핑될 때의 서블릿 이름이 "appServlet" 이다 -->
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
+	<!-- 한글 인코딩 필터 설정(톰캣 내부의 한글처리) -->
+    <filter>
+        <filter-name>encodingFilter</filter-name>
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+            <!-- ㄴ>강제 인코딩 = true -->
+        </init-param>
+    </filter>
+    <!-- 위에 지정한 encodingFilter이름을 모든 패턴에 적용 -->
+    <filter-mapping>
+        <filter-name>encodingFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+</web-app>
