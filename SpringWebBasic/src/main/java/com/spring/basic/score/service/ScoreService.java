@@ -1,6 +1,5 @@
 package com.spring.basic.score.service;
 
-import org.springframework.stereotype.Controller;
 import org.springframework.stereotype.Service;
 
 import com.spring.basic.score.dto.ScoreRequestDTO;
