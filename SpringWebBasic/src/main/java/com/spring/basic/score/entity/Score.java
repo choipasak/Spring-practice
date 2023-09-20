@@ -33,6 +33,7 @@ public class Score {
 	private double average; //평균
 	private Grade grade; //학점
 
+	//생성자임
 	public Score(ScoreRequestDTO dto) {
 		this.stuName = dto.getName();
 		changeScore(dto);//본인의 메서드
@@ -48,7 +49,7 @@ public class Score {
 
 	private void calcGrade() {
 		if (average >= 90) {
-			this.grade = Grade.A;
+			this.grade = Grade.A;//Grade.A: enum클래스(static)
 		} else if (average >= 80) {
 			this.grade = Grade.B;
 		} else if (average >= 70) {
@@ -61,8 +62,9 @@ public class Score {
 	}
 
 	private void calcTotalAndAvg() {
-		this.total = kor + eng + math;
+		this.total = kor + eng + math;//우항에 각각 this. 생략 되어 있음!
 		this.average = total / 3.0;
+		//일부러 이렇게 메서드로 따로 나눈 것이다.
 	}
 
 }
