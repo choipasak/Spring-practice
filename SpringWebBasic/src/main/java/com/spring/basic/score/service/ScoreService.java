@@ -3,6 +3,8 @@ package com.spring.basic.score.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.spring.basic.score.controller.ScoreController;
@@ -18,11 +20,18 @@ import lombok.RequiredArgsConstructor;
 //ex) 값을 가공, 예외 처리, dto로 변환, 트랜잭션 등등 ...
 
 @Service //서비스 계층은 이렇게 빈 등록 해준다! <- @Controller와 다른점: 없음. 이름만 다름.
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 public class ScoreService {
 
-
+	
 	private final IScoreRepository scoreRepository;
+	
+	@Autowired
+	// IScoreRepository의 파일이 지금 2개여서 값이 2개가 들어올 수 있음
+	// -> error -> 해결: @Qualifier("jdbc") -> repository로 만들어 놨음
+	public ScoreService(@Qualifier("jdbc") IScoreRepository scoreRepository) {
+		this.scoreRepository = scoreRepository;
+	}
 
 	//score에서 받은 점수로 총합점과 평균을 내는 서비스계층
 	//등록 중간처리
@@ -55,7 +64,7 @@ public class ScoreService {
 	 현재 요청에 어울리는 응답 화면에 맞는 DTO로 변경해서 주자!
 	 */
 	public List<ScoreListResponseDTO> getList() {//등록된 정보를 가진 목록을 보여줄 수 있는 메서드
-
+		
 		List<ScoreListResponseDTO> dtoList = new ArrayList<>();//정보 받아서 저장해준 다음 컨트롤러로 넘겨줄 객체 생성
 		List<Score> scoreList = scoreRepository.findAll();//일단 score객체가 담긴 List를 받음(전체 정보 가져옴)
 
@@ -67,6 +76,8 @@ public class ScoreService {
 		}//나중에는 이 메서드의 내용을 한줄로 요약이 가능해짐. 나중에!
 
 		return dtoList;
+		
+		//return null; // 현재 레파지토리의 findAll()이 return null하고있어서 NPE터짐
 	}
 
 	//학생 점수 개별 조회

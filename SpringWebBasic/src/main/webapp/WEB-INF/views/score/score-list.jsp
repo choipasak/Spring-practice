@@ -85,7 +85,9 @@ section.score {
 		<section class="score">
 
 			<h1>시험 점수 등록</h1>
-			<form action="/basic/score/register" method="POST">
+			<form action="/basic/score/registe
+			
+			r" method="POST">
 				<label> # 이름: <input type="text" name="name">
 				</label> <label> # 국어: <input type="text" name="kor">
 				</label> <label> # 영어: <input type="text" name="eng">
