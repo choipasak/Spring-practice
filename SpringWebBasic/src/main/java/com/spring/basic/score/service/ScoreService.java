@@ -11,6 +11,7 @@ import com.spring.basic.score.controller.ScoreController;
 import com.spring.basic.score.dto.ScoreListResponseDTO;
 import com.spring.basic.score.dto.ScoreRequestDTO;
 import com.spring.basic.score.entity.Score;
+import com.spring.basic.score.repository.IScoreMapper;
 import com.spring.basic.score.repository.IScoreRepository;
 import com.spring.basic.score.repository.ScoreRepositoryImpl;
 
@@ -20,18 +21,20 @@ import lombok.RequiredArgsConstructor;
 //ex) 값을 가공, 예외 처리, dto로 변환, 트랜잭션 등등 ...
 
 @Service //서비스 계층은 이렇게 빈 등록 해준다! <- @Controller와 다른점: 없음. 이름만 다름.
-//@RequiredArgsConstructor
+@RequiredArgsConstructor
 public class ScoreService {
 
 	
-	private final IScoreRepository scoreRepository;
+	private final IScoreMapper scoreRepository;
 	
-	@Autowired
 	// IScoreRepository의 파일이 지금 2개여서 값이 2개가 들어올 수 있음
 	// -> error -> 해결: @Qualifier("jdbc") -> repository로 만들어 놨음
-	public ScoreService(@Qualifier("jdbc") IScoreRepository scoreRepository) {
+	/*
+	public ScoreService(@Qualifier("spring") IScoreRepository scoreRepository) {
 		this.scoreRepository = scoreRepository;
 	}
+	주석처리 한 이유: IScoreMapper의 파일은 1개 밖에 없어서
+	*/
 
 	//score에서 받은 점수로 총합점과 평균을 내는 서비스계층
 	//등록 중간처리

@@ -27,15 +27,15 @@ import com.spring.basic.score.entity.Score;
 public class ScoreJDBCRepository implements IScoreRepository {
 	
 	
-	//DB 접속에 필요한 정보들을 변수화. (DB 주소, 계정명, 비밀번호)
+	//DB 접속에 필요한 정보들을 변수화. (DB 주소, 계정명, 비밀번호) - 고정
 	private String url = "jdbc:oracle:thin:@localhost:1521:xe"; // 리스너가 볼 주소
 	private String username = "hr";
 	private String password = "hr";
 	
 	//finally에서 객체를 종료하기 위해서 밖에서 변수 따로 선언!
-	private Connection conn = null; // save() 메서드에서 사용
-	private PreparedStatement pstmt = null; // save() 메서드에서 사용, 이 클래스에서만 사용할거여서 private를 사용함
-	private ResultSet rs = null; // findAll() 메서드에서 사용
+	private Connection conn = null; 
+	private PreparedStatement pstmt = null; // 이 클래스에서만 사용할거여서 private를 사용함
+	private ResultSet rs = null;
 	
 	// 원래 DB 연동을 전담하는 객체는 무분별한 객체 생성을 막기 위해
 	// 싱글톤 디자인 패턴을 구축하는 것이 일반적.
@@ -47,12 +47,16 @@ public class ScoreJDBCRepository implements IScoreRepository {
 		
 		//드라이버(객체들이 드나들 수 있는 길 뚫는다 의미) 클래스를 호출하기 위한 생성자 -> DB연결 되면 객체끼리 드나들게 길 뚫는 과정
 		try {
-			Class.forName("oracle.jdbc.driver.OracleDriver"); // 오라클이 제공하는 클래스인 OracleDriver를 Class.forName[객체생성없이 클래스 이름으로 부를 수 있는 클래스]에게 위치를 전달해서 호출
+			// Maven에서 ojdbc6을 받아왔음! (OracleDriver 쓸라고!)
+			Class.forName("oracle.jdbc.driver.OracleDriver");
+			// 오라클이 제공하는 클래스인 OracleDriver를 자바의 클래스인 Class.forName[객체생성없이 클래스 이름으로 부를 수 있는 클래스]에게 위치를 전달해서 호출
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} // OracleDriver강제구동 -> 가동 시켜야 DB와 연결해서 모든 일들을 할 수 있음
 		
 	}
+	
+	////////////////////// 여기까지 DB연동 준비! //////////////////////
 	
 	@Override
 	public List<Score> findAll() {
@@ -130,7 +134,8 @@ public class ScoreJDBCRepository implements IScoreRepository {
 			// 접속 정보를 함께 전달합니다.
 			conn = DriverManager.getConnection(url, username, password); //오라클에서 제공하는 것/ 예외처리가 강제되어 있어서 TRY-CATCH 필요!
 			// conn이 나 대신 DB에 접속할 수 있는 대리인(DB의 접속 까지만. 실행하는 얘는 따로있음!). 이다!
-		
+			// 커넥션 객체를 받아서 밑에서 pstmt에게 넘겨줄거임!(pstmt가 DB에서의 실행객체니까)
+			
 			// 3. 이제 접속을 할 수 있게 됐으니, SQL을 실행할 수 있는 PreparedStatement를 받아옵시다!
 			// 직접 생성하지 않고, 메서드를 통해 받아옵니다.
 			pstmt = conn.prepareStatement(sql); // 맨 위에 선언한 sql 변수가 매개값
@@ -184,6 +189,10 @@ public class ScoreJDBCRepository implements IScoreRepository {
 			pstmt.setInt(1, stuNum); 
 			
 			pstmt.executeUpdate();
+			// 여기서 원래 pstmt.executeUpdate(sql); 이라고 작성해 줬었음
+			// 당연히 에러남: 실행한다고 executeUpdate해줬는데 ?가 대입된 문장이 아닌
+			// "DELETE FROM score WHERE stu_num = ?"를 다시 줬기 때문에
+			// 값이 부족하다고 에러남
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
