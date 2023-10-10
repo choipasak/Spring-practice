@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.spring.basic.board.repository.IBoardMapper">
+
+	<!-- 테이블의 컬럼명과 entity의 필드명이 달라서 작성함 -->
+	<resultMap type="com.spring.basic.board.entity.Board" id="boardMap">
+		<id property="boardNo" column="board_no"/>
+		<result property="regDate" column="reg_date"/>	
+	</resultMap>
+
+
+	<!-- insert 기능 - 등록 -->
+	<insert id="insertArticle">
+		INSERT INTO jdbc_board
+		VALUES (board_seq.NEXTVAL, #{writer}, #{title}, #{content}, sysdate)
+	</insert>
+
+	
+	<!-- 게시글 목록(가져오기) -->
+	<select id="getArticles" resultMap="boardMap">
+		SELECT * FROM jdbc_board
+		ORDER BY board_no DESC <!-- 최근에 등록한 글이 맨 위에 있어야 하니까 -->
+	</select>
+
+	
+	<!-- 게시글 상세보기 -->
+	<select id="getArticle" resultMap="boardMap">
+		SELECT * FROM jdbc_board
+		WHERE board_no = #{bno}<!-- 반드시 인터페이스 가서 매개변수명 확인하고 작성 -->
+	</select>
+	
+	<!-- 게시글 수정 -->
+	<update id="updateArticle">
+		UPDATE jdbc_board
+		SET
+			writer = #{writer},
+			title = #{title},
+			content = #{content}
+		WHERE board_no = #{boardNo}
+	</update>
+	
+	<!-- 게시글 삭제 -->
+	<delete id="deleteArticle">
+		DELETE FROM jdbc_board
+		WHERE board_no = #{bno}
+	</delete>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

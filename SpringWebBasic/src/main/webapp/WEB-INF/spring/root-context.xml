@@ -56,6 +56,8 @@
 		실제 인터페이스의 경로를 알려주는 역할이다! -->
 	
 	
+	<!-- IBoardMapper를 구현하는 레파지토리 -->
+	<mybatis-spring:scan base-package="com.spring.basic.board.repository"/>
 	
 		
 		

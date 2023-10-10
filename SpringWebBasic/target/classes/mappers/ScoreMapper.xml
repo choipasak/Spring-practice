@@ -10,11 +10,10 @@
 		=> '야 Score객체 포장할 때 이름 다른거 있거든 그거 내가 알려줄게' 라는 의미 -->
 	<!-- sql문이 리턴이 있는 경우 -->
 	<resultMap type="com.spring.basic.score.entity.Score" id="scoreMap">
+		<!-- 테이블에서 PRIMARY KEY로 등록한 컬럼은 id태그로, 나머지는 result태그로 선언 -->
 		<!-- property에는 변수명(= 필드명) column에는 컬럼명 작성 순서 상관 없다! -->
 		<id property="stuNum" column="stu_num" />
 		<result property="stuName" column="stu_name" />
-		<!-- 테이블에서 PRIMARY KEY로 등록한 컬럼은 id태그로,
-			나머지는 result태그로 선언 -->
 	</resultMap>
 	
 	<!-- 점수 등록 기능 -->
