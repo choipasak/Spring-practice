@@ -13,6 +13,7 @@ tmp/
 *.swp
 *~.nib
 local.properties
+Hikari.properties
 .settings/
 .loadpath
 .recommenders

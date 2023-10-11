@@ -22,12 +22,15 @@ public class BoardService {
 	// 게시글 작성
 	public void insertArticle(String writer, String title, String content) {
 		
-		Board board = new Board();
-		board.setWriter(writer);
-		board.setTitle(title);
-		board.setContent(content);
-		
-		mapper.insertArticle(board);
+//		Board board = new Board();
+//		board.setWriter(writer);
+//		board.setTitle(title);
+//		board.setContent(content);
+		mapper.insertArticle(Board.builder()
+								   .writer(writer)
+								   .title(title)
+								   .content(content)
+								   .build());
 		
 	}
 	
@@ -74,7 +77,7 @@ public class BoardService {
 //						   .build();
 		// Builder를 만든다면 이렇게 원하는 값만 메서드체이닝으로 값을 뽑아서 board객체에 담으면 끝!(객체 생성, setter, 등등을 작성하지 않아도 되게 되었다!)
 		// 원하는 값으로만 초기화 된 구성으로 이루어진 객체를 얻을 수 있다. 
-		
+
 		mapper.updateArticle(Board.builder()
 								   .boardNo(dto.getBoardNo())
 								   .writer(dto.getWriter())
