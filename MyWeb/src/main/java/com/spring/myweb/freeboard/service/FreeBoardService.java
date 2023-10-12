@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.ui.Model;
 
 import com.spring.myweb.freeboard.DTO.FreeContentResponseDTO;
 import com.spring.myweb.freeboard.DTO.FreeListResponseDTO;
 import com.spring.myweb.freeboard.DTO.FreeRegistRequestDTO;
+import com.spring.myweb.freeboard.DTO.FreeUpdateRequestDTO;
 import com.spring.myweb.freeboard.entity.FreeBoard;
 import com.spring.myweb.freeboard.mapper.IFreeBoardMapper;
 
@@ -43,22 +45,27 @@ public class FreeBoardService implements IFreeBoardService {
 
 	@Override
 	public FreeContentResponseDTO getContent(int bno) {
-		FreeBoard contentBoard = mapper.getContent(bno);
-		FreeContentResponseDTO condto = new FreeContentResponseDTO(contentBoard);
+		//FreeBoard contentBoard = mapper.getContent(bno);
+		//FreeContentResponseDTO condto = new FreeContentResponseDTO(contentBoard);
+		
 		//condto.add(new FreeContentResponseDTO(contentBoard));
 		
-		
-		return condto;
+		return new FreeContentResponseDTO(mapper.getContent(bno)); // 이렇게 한줄로 작성 가능!
 	}
 
 	@Override
-	public void update(FreeBoard freeBoard) {
+	public void update(FreeUpdateRequestDTO dto) {
 
+		mapper.update(FreeBoard.builder()
+				.bno(dto.getBno())//dto에 담은 값을 freeboard에 넣어줬음
+				.title(dto.getTitle())
+				.content(dto.getContent())
+				.build());
 	}
 
 	@Override
 	public void delete(int bno) {
-
+		mapper.delete(bno);
 	}
 
 }

@@ -106,40 +106,60 @@ public class FreeBoardControllerTest {
 		// bno, title, writer, content, updateDate == null? regDate, updateDate 들은 수정됨
 		
 		
-		ModelAndView mv =
-		mockMvc.perform(MockMvcRequestBuilders.get("/freeboard/content").param("bno", 3+"")) //이렇게 해주면 Spring이 자동으로 String으로 바꿔줌
-				.andReturn()
-				.getModelAndView();
+		ModelAndView mv = mockMvc.perform(
+					MockMvcRequestBuilders.get("/freeboard/content")
+												  .param("bno", 1+"")//이렇게 해주면 Spring이 자동으로 String으로 바꿔줌
+					).andReturn().getModelAndView();
 		
 		//model에 담는 정보가 저장되는 .getModelMap
 		//.getModelMap의 메서드인 .get("내가 model객체에 담을 때 지은 이름")은 model객체에 담은 정보를 빼온다!
 		FreeContentResponseDTO dto = (FreeContentResponseDTO) mv.getModelMap().get("gocontent");
-		assertEquals(dto.getBno(), 3);
-		assertEquals(mv.getViewName(), "freeboard/freeDetail");
-	}
+		//.get()의 리턴값은 object임 object는 부모니까 여기서 3번글인ㄴ거를 getBno를 해주려면 FreeContentResponseDTO 타입으로 내려줘야함. 그래야 getBno메서드를 사용할 수 있으니까.
+		// 그래서 형변환을 해주고 변수 dto로 선언 해 준 다음 번호를 뽑아서 그 번호가 3번이 맞냐! 로 assert를 해줄 수 있는 것이다.
 
-	@Test
-	@DisplayName("수정할거임 수정하기 전이랑 후 값이랑 같냐고 assert")
-	void testUpdate() throws Exception {
-		// update -> post
-		ModelAndView mv = mockMvc.perform(MockMvcRequestBuilders.post("/freeboard/update").param("bno", 3+""))
-				.andReturn()
-				.getModelAndView();
-		
-		
-		
-		assertEquals(mv.getViewName(), "redirect:/freeboard/freeList");
+		//검증
+		assertEquals(mv.getViewName(), "freeboard/freeDetail");
+		System.out.println(dto);
+		assertEquals(dto.getBno(), 1);
 	}
 	
 	@Test
-	@DisplayName("지울개.")
-	void testDelete() throws Exception {
-		ModelAndView mv = mockMvc.perform(MockMvcRequestBuilders.get("/freeboard/delete").param("bno", "3"))
+    @DisplayName("3번글의 제목과 내용을 수정하는 요청을 post방식으로 전송하면 수정이 진행되고, "
+            + "수정된 글의 상세보기 페이지로 응답해야 한다.")
+    // /freeboard/modify -> post
+	// 작성자는 수정하지 않는다.
+    void testModify() throws Exception {
+		
+		String bno = "3";
+		
+		String viewName = mockMvc.perform(MockMvcRequestBuilders.post("/freeboard/modify")
+    			.param("bno", bno)
+    			.param("title", "일기장")
+    			.param("content", "아샷추마싯다")
+    			)
 				.andReturn()
-				.getModelAndView();
-				
-	
-	}
+				.getModelAndView()
+				.getViewName();
+		
+		
+		assertEquals(viewName, "redirect:/freeboard/content?bno=" + bno);
+        
+    }
+    
+    @Test
+    @DisplayName("지울개.3번글 -> 3번 글을 삭제하면 목록 재요청이 발생할 것이다.")
+    // /freeboard/delete -> post
+    void testDelete() throws Exception {
+    	
+    	assertEquals("redirect:/freeboard/freeList", 
+    			mockMvc.perform(MockMvcRequestBuilders.post("/freeboard/delete").param("bno", 3+""))
+				.andReturn()
+				.getModelAndView()
+				.getViewName()
+				);
+    	
+        
+    }
 
 }
 

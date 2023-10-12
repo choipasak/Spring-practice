@@ -2,6 +2,7 @@ package com.spring.myweb.freeboard.mapper;
 
 import java.util.List;
 
+import com.spring.myweb.freeboard.DTO.FreeUpdateRequestDTO;
 import com.spring.myweb.freeboard.entity.FreeBoard;
 
 public interface IFreeBoardMapper {
@@ -11,6 +12,9 @@ public interface IFreeBoardMapper {
 	
 	// 글 목록
 	List<FreeBoard> getList();
+	
+	//총 게시물 개수 구하기
+	int getTotal();
 	
 	// 상세 보기
 	FreeBoard getContent(int bno);

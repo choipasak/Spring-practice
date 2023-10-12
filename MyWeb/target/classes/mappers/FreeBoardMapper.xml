@@ -20,6 +20,7 @@
 	
 	<select id="getList" resultType="freeBoard">
 		SELECT * FROM freeboard
+		ORDER BY bno DESC
 	</select>
 	
 	<select id="getContent" resultType="freeboard">
@@ -31,7 +32,7 @@
 		UPDATE freeboard
 		SET
 			title = #{title},
-			writer = #{writer},
+			<!-- writer = #{writer}, -->
 			content = #{content},
 			update_date = sysdate
 		WHERE bno = #{bno}
@@ -41,6 +42,10 @@
 		DELETE FROM freeboard
 		WHERE bno = #{bno}
 	</delete>
+	
+	<select id="getTotal" resultType="int">
+		SELECT COUNT(*) FROM freeboard
+	</select>
 
 </mapper>
 

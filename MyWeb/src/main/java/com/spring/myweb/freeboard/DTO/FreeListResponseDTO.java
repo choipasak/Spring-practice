@@ -33,7 +33,7 @@ public class FreeListResponseDTO {
 	
 	// 원래 LocalDateTime타입인데 String으로 작성.
 	// 이 메서드를 통해 LocalDateTime -> String 으로 변환+포맷 해서 만들어준다!
-	private String makePrettierDateString(LocalDateTime regDate) {
+	static String makePrettierDateString(LocalDateTime regDate) {
 		DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		return dtf.format(regDate);
 	}

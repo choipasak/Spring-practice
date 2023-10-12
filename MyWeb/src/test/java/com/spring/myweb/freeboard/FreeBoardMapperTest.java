@@ -36,22 +36,23 @@ public class FreeBoardMapperTest {
 		//없으면 각각 모두 생략 가능
 		
 		//given: 테스트를 위해 주어질 데이터 세팅 (parameter) - 생략(parameter값이 없음, 자체적으로 값을 준거임)
-		/*
-		for(int i=1; i<=10; i++) {
+		
+		for(int i=1; i<=300; i++) {
 			//when: 테스트 실제 상황 세팅
 			mapper.regist(FreeBoard.builder()
 					.title("테스트 제목" + i)
 					.writer("abc1234")
 					.content("테스트 내용입니다." + i)
 					.build());
-		}*/
+		}
 		//then: 테스트 결과를 확인하는 곳. -> SELECT를 해야하는 조회문이 지금 없으니 결과 확인 못함
-		
+		/*
 		mapper.regist(FreeBoard.builder()
 				.title("테스트 제목")
 				.writer("메롱메롱")
 				.content("테스트 중이니 조용조용.")
 				.build());
+				*/
 	}
 	
 	//when
