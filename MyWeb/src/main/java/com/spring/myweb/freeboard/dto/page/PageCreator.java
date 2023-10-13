@@ -1,7 +1,6 @@
 package com.spring.myweb.freeboard.dto.page;
 
 import lombok.Getter;
-import lombok.Setter;
 import lombok.ToString;
 
 @Getter @ToString
