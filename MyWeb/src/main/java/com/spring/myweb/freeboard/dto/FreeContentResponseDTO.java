@@ -1,4 +1,4 @@
-package com.spring.myweb.freeboard.DTO;
+package com.spring.myweb.freeboard.dto;
 
 import com.spring.myweb.freeboard.entity.FreeBoard;
 
@@ -15,7 +15,6 @@ public class FreeContentResponseDTO {
 	private String writer;
 	private String content;
 	private String date; //String으로 LocalDateTime을 받아서 DTO에서 변환처리 해주는 것이 jsp파일에서 변환처리 해주는 것보다 편함
-	
 	
 	public FreeContentResponseDTO(FreeBoard board) {
 		this.bno = board.getBno();

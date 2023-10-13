@@ -1,4 +1,4 @@
-package com.spring.myweb.freeboard.DTO;
+package com.spring.myweb.freeboard.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;

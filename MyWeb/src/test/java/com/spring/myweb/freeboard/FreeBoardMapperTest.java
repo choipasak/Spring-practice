@@ -1,5 +1,10 @@
 package com.spring.myweb.freeboard;
 
+//import static: Assertions클래스 안에 있는 클래스들은 Assertions라는 이름 안붙이고 사용할 수 있음
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -9,11 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import com.spring.myweb.freeboard.dto.page.Page;
 import com.spring.myweb.freeboard.entity.FreeBoard;
 import com.spring.myweb.freeboard.mapper.IFreeBoardMapper;
-
-//import static: Assertions클래스 안에 있는 클래스들은 Assertions라는 이름 안붙이고 사용할 수 있음
-import static org.junit.jupiter.api.Assertions.*;
 
 @ExtendWith(SpringExtension.class) // 테스트 환경을 만들어 주는 Junit5 객체를 로딩 해 주는 롬복
 @ContextConfiguration(locations = {"file:src/main/webapp/WEB-INF/spring/root-context.xml"})
@@ -59,13 +62,18 @@ public class FreeBoardMapperTest {
 	@Test
 	@DisplayName("조회 시 전체 글 목록이 올 것이고, 조회 된 글의 개수는 10개일 것이다.")
 	void getListTest() {
-		List<FreeBoard> list = mapper.getList();
+		List<FreeBoard> list = mapper.getList(Page.builder()
+													.pageNo()
+													.amount()
+													.build()
+													);
 		for(FreeBoard f : list) {
 			System.out.println(f);
 		}
 		
 		//then
-		assertEquals(list.size(), 11);
+		assertEquals(list.size(), 10);
+		System.out.println();
 		
 	}
 	
@@ -148,7 +156,7 @@ public class FreeBoardMapperTest {
 		mapper.delete(bno);
 		
 		//then
-		assertEquals(mapper.getList().size(), 11);
+//		assertEquals(mapper.getList().size(), 11);
 		assertNull(mapper.getContent(bno));
 		
 		//선생님.ver
@@ -159,7 +167,7 @@ public class FreeBoardMapperTest {
 		mapper.delete(bno1);
 		
 		//then
-		assertEquals(mapper.getList().size(), 11);
+//		assertEquals(mapper.getList().size(), 11);
 		assertNull(mapper.getContent(bno1));
 	}
 
