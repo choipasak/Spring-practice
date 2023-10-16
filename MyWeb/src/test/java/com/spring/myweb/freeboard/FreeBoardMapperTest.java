@@ -63,8 +63,8 @@ public class FreeBoardMapperTest {
 	@DisplayName("조회 시 전체 글 목록이 올 것이고, 조회 된 글의 개수는 10개일 것이다.")
 	void getListTest() {
 		List<FreeBoard> list = mapper.getList(Page.builder()
-													.pageNo()
-													.amount()
+													.pageNo(1)
+													.amount(10)
 													.build()
 													);
 		for(FreeBoard f : list) {

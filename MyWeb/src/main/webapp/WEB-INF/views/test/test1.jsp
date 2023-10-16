@@ -76,13 +76,13 @@
            }; // 이 객체는 아직 JSON이 아니라 JS 객체이다.
 
            //JS객체 -> JSON으로 변경: JSON.stringfy(arg)
-           const sendData = JSON.stringfy(data);
+           const sendData = JSON.stringify(data);
 
            //요청 받는 서버에게 JSON형태라고 정보를 전달해서 알려주기 -> 요청 헤더에 지정.
            xhr.setRequestHeader('content-type', 'application/json'); // 내가 지금 보내는 content-type은 json형태야~
 
            //4. 서버에 요청을 전송한다!
-           xhr.sendData(sendData);
+           xhr.send(sendData);
 
            //5. 응답된 정보 확인하기
            xhr.onload = function(){//응답이 되었다면 = 요청이 완료가 되었다면
@@ -90,17 +90,7 @@
                 console.log(xhr.response);
            };
         
-        
-        
-        
-        
-        
-        
-        
-        
         }
-
-
 
     </script>
 
