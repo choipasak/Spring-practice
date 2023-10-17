@@ -3,6 +3,8 @@
 
 .DS_Store
 Servers/
+properties/
+
 
 ### Eclipse ###
 .metadata
@@ -12,8 +14,11 @@ tmp/
 *.bak
 *.swp
 *~.nib
+*.properties
+.properties
 local.properties
 Hikari.properties
+Email.properties
 .settings/
 .loadpath
 .recommenders

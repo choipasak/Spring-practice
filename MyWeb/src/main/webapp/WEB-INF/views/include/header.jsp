@@ -47,7 +47,7 @@
                             </ul>
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="dropdown">
-                                    <a class="dropdown-toggle" data-toggle="dropdown" href="#">로그인
+                                    <a class="dropdown-toggle" data-toggle="dropdown" href="/myweb/user/userLogin">로그인
                                         <span class="caret"></span></a>
                                     <ul class="dropdown-menu">
                                         <li><a href="/myweb/user/userJoin"><span class="glyphicon glyphicon-user"></span>Join</a></li>
