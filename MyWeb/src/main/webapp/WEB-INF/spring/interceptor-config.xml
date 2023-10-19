@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xsi:schemaLocation="http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 하단의 namespaces 탭에서 mvc 기능 추가 -->
+	<!-- web.xml에 초기 설정 파일로 이 파일을 추가
+		이렇게 따로 xml을 작성할 시에 반드시 web.xml파일에 경로를 추가해 줘야 한다: 디스패처 서블릿이 가동될 때 같이 구동되라고 -->
+	
+	<bean id="userLoginHandler" class="com.spring.myweb.util.interceptor.UserLoginHandler"/>
+	<bean id="userAuth" class="com.spring.myweb.util.interceptor.UserAuthHandler"/>
+	
+	<!-- interceptors를 하나만 열게 아니여서 태그를 열었음 -->
+	<!-- 로그인 이후에 실행되는 postHandler를 어떤 url에 동작하게 할 지 세팅 -->
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 어떤 인터셉터에 반응하는 요청인지 경로를 작성해 줘! -->
+			<mvc:mapping path="/user/userLogin"/>
+			<ref bean="userLoginHandler"/> <!-- userLoginHandler(bean의 id값)이 반응할거라고 말해 준 것임 -->
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+	<!-- 로그인 권한 체크 인터셉터 url 매핑 -->	
+	<mvc:interceptors>
+		<mvc:interceptor>
+			<!-- 어떤 인터셉터에 반응하는 요청인지 경로를 작성해 줘! -->
+			<mvc:mapping path="/freeboard/freeRegist"/>
+			<mvc:mapping path="/user/userMypage"/>
+			<ref bean="userAuth"/> <!-- userAuth(bean의 id값)이 반응할거라고 말해 준 것임 -->
+			
+			<!-- 로그인 안하면 freeboard 아예 다 막아버릴거야 -->			
+			<!-- <mvc:mapping path="/freeboard/**"/> -->
+			
+		</mvc:interceptor>
+	</mvc:interceptors>
+
+
+
+
+
+
+
+</beans>
+
+
+
+
+
+
+
+
+
+
+
+

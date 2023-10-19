@@ -11,7 +11,7 @@
 					<p>수정하기</p>
 				</div>
 				<!-- form태그에 name을 작성해주면 JS에서 document.updateForm으로 바로 지목할 수 있음. form만 가능. (디자인을 적용시키려면 id나 class가 필요함) -->
-				<form action="/myweb/freeboard/modify" method="post"
+				<form action="${pageContext.request.contextPath}/freeboard/modify" method="post"
 					name="updateForm">
 					<div class="form-group">
 						<label>번호</label> <input class="form-control" name="bno"
@@ -48,7 +48,7 @@
 <script>
 	//목록으로 이동하는 것 처리
 	document.getElementById('list-btn').onclick = function() { //property방식으로 이벤트 건 것
-		location.href = '/myweb/freeboard/freeList';
+		location.href = '${pageContext.request.contextPath}/freeboard/freeList';
 	}
 
 	//form 태그는 메서드 없이 form 태그의 name으로 요소를 바로 취득할 수 있습니다.
@@ -78,7 +78,7 @@
 	document.getElementById('del-btn').onclick = () => {
 		if(confirm('정말 삭제하시겠습니까?')){ //alert: 그냥 작성한 내용을 띄워주는 알림창, confirm: 작성해준 내용 + 확인/취소 버튼까지 포함 한 창을 띄워주는 알림창
 			//특정 태그의 속성을 바꾸고 싶다!
-			$form.setAttribute('action', '/myweb/freeboard/delete'); //이 메서드로 form의 method속성도 바꿀 수 있음
+			$form.setAttribute('action', '${pageContext.request.contextPath}/freeboard/delete'); //이 메서드로 form의 method속성도 바꿀 수 있음
 			$form.submit();
 		}
 

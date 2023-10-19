@@ -38,6 +38,8 @@
     const msg = '${msg}';
     if (msg === 'joinSuccess!') { //회원 가입을 통해서 왔다면 
         alert('회원 가입을 환영합니다!');
+    }else if(msg === 'loginFail'){
+        alert('로그인에 실패했습니다! 아이디와 비밀번호를 확인해 주세요.');
     }
 
 
@@ -58,7 +60,7 @@
     }
 
     document.getElementById('joinBtn').onclick = () => {
-        location.href = '/myweb/user/userJoin';
+        location.href = '${pageContext.request.contextPath}/user/userJoin';
     }
 
 </script>

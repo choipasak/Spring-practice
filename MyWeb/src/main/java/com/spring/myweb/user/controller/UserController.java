@@ -1,5 +1,7 @@
 package com.spring.myweb.user.controller;
 
+import javax.servlet.http.HttpSession;
+
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +45,7 @@ public class UserController {
 	@GetMapping("/id/{account}") //{}안을 지목하기 위한 이름을 안에 작성해준다.
 	@ResponseBody //얘는 restController가 아니니까 붙여줘야함
 	public String idCheck(@PathVariable String account) {
-		//위처럼 작성하면 /myweb/user/kim098 로 오는 것과 같다
+		//위처럼 작성하면 ${pageContext.request.contextPath} -> /user/kim098 로 오는 것과 같다
 		System.out.println("전달 된 아이디: " + account);
 		
 		int result = service.idCheck(account);
@@ -90,9 +92,33 @@ public class UserController {
 	@PostMapping("/userLogin")
 	public void login(String userId, String userPw, Model model) {
 		
-		service.login(userId);
+		System.out.println("나는 UserController의 login 이뵤~!!!!!");
+		/*
+		model.addAttribute("dbPw", service.login(userId)); //db에 저장된 사용자의 비번
+		model.addAttribute("inputPw", userPw); //사용자 비번
+		//이렇게 작성하면 중간에 넣어준 postHandler가 이 값을 받음(응답)
+		*/
+		model.addAttribute("result", service.login(userId, userPw)); //id or null 이 값으로 들어감
 		
 	}
+	
+	//마이페이지 이동 요청
+	@GetMapping("/userMypage")
+	public void userMypage(HttpSession session, Model model) {
+		//마이페이지는 로그인 한 사람만 이동 가능 -> 세션에 아이디가 있다!
+		String id = (String) session.getAttribute("login");
+		model.addAttribute("userInfo", service.getInfo(id));
+		//userMypage.jsp로 userInfo라는 이름을 가진 데이터 객체가 넘어간다.
+		
+	}
+	
+	
+	//회원 탈퇴
+	
+	
+	
+	
+	
 	
 }
 

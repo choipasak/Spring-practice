@@ -54,5 +54,6 @@
 		이 문장이 없다면 빈 등록이 되지 않습니다. -->
 	<mybatis-spring:scan base-package="com.spring.myweb.freeboard.mapper" />
 	<mybatis-spring:scan base-package="com.spring.myweb.user.mapper" />
+	<mybatis-spring:scan base-package="com.spring.myweb.reply.mapper" />
 
 </beans>

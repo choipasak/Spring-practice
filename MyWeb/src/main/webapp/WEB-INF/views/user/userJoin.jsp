@@ -10,7 +10,7 @@
                 <div class="titlebox">
                     회원가입
                 </div>
-                <form action="/myweb/user/join" method="post" name="joinForm">
+                <form action="${pageContext.request.contextPath}/user/join" method="post" name="joinForm">
                     <div class="form-group">
                         <!--사용자클래스선언-->
                         <label for="id">아이디</label>
@@ -64,8 +64,6 @@
                                 <option>@naver.com</option>
                                 <option>@daum.net</option>
                                 <option>@gmail.com</option>
-                                <option>@hanmail.com</option>
-                                <option>@yahoo.co.kr</option>
                             </select>
                             <div class="input-group-addon">
                                 <button id="mail-check-btn" type="button" class="btn btn-primary">본인인증</button>
@@ -146,7 +144,7 @@
         const xhr = new XMLHttpRequest();
 
         //서버 요청 정보 설정, .open('요청 방식 작성', 'url주소') -> url에 목적을 최대한 드러나지 않게 작성해야함. 쉽게 유추 가능
-        xhr.open('GET', `/myweb/user/\${userId}`); 
+        xhr.open('GET', `${pageContext.request.contextPath}/user/\${userId}`); 
         //원래 익숙한 형태 -> 쿼리스트링방식, 위의 방법은 서버에서 어떻게 값을 따로 뜯을 수 있는가!
 
         //바로 요청 보내기
@@ -175,7 +173,7 @@
 
         /*
         //fetch('url', {요청 관련 정보를 담은 객체(GET방식에서는 따로 전달 안함.)})
-        fetch('/myweb/user/' + userId) // -> 연습이니까 userId GET방식으로 진행
+        fetch('${pageContext.request.contextPath}/user/' + userId) // -> 연습이니까 userId GET방식으로 진행
         //Promise 객체의 상태가 요청 성공일 시, 데이터 후속 처리가 진행된다.
         .then(res => { //요청에 대한 응답 정보가 res로 옴 + 값이 1개여서 그냥 화살표 함수를 사용 함(+ 원래 함수를 매개 값으로 받음), res는 그냥 매개변수 response, 응답이 res에 옴
             //fetch 함수를 통해 비동기 통신이 실행되고 나서,
@@ -201,8 +199,8 @@
 
 
         //비동기 요청을 fetch()로 보내고 결과를 확인하기.
-        fetch('/myweb/user/id/' + userId)
-            //화살표 함수 내의 코드가 한 줄이고, 그것이 return이라면 괄호와 return 생략 가능!
+        fetch('${pageContext.request.contextPath}/user/id/' + userId)
+            //화살표 함수 내의 코드가 한 줄이고, 그것이 return이라면 괄호와 return 생략 가능   !
             .then(res => res.text()) //요청 완료 후 응답 정보에서 텍스트 데이터가 담긴 Promise 반환.
             .then(data => { //텍스트 데이터만 담긴 Promise 객체로부터 data를 전달 받음, data에는 ok or duplicated가 담겨 있는 것임.
                 if (data === 'ok') {
@@ -239,13 +237,13 @@
 
         //2. POST방식
         //원래 rest방식에서는 url에 동사를 사용하지 말라. 고 되어 있는데 -> 왜: 동사로 요청하는 일이 무엇인지 유추 가능해서
-        fetch('/myweb/user/email', { 
+        fetch('${pageContext.request.contextPath}/user/email', { 
             method: 'post',
-            headers: {
+            headers: { //기타 속성을 작성해 주는 곳
                 // headers는 객체로 전달되서 {}가 열림
                 'Content-Type': 'application/json' //그냥 텍스트를 보낸다 + 보낼 데이터가 1개다 -> text/plain
             },
-            body: email
+            body: email //요청 header의 같이 보내 줄 데이터 값을 작성해준다. -> body에
         }) //이렇게 내부에서 바로 작성도 가능. 객체 밖에서 따로 작성하고 대입해도 ㄱㅊ
         .then(res => res.text())
         .then(data => {

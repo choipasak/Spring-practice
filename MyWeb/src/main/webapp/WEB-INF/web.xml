@@ -23,8 +23,9 @@
 		<init-param>
 			<param-name>contextConfigLocation</param-name>
 			<param-value>
-				WEB-INF/spring/appServlet/servlet-context.xml
-				WEB-INF/spring/appServlet/email-config.xml
+				WEB-INF/spring/servlet-context.xml
+				WEB-INF/spring/email-config.xml
+				WEB-INF/spring/interceptor-config.xml
 			</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
