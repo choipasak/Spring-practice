@@ -158,7 +158,7 @@
                     document.getElementById('replyPw').value = '';
 
                     //등록 완료 후 댓글 목록 함수를 호출해서 비동기식으로 목록 표현.
-                    getList(1);
+                    getList(1, true);
                 });
         } // 댓글 등록 이벤트 끝!
 
@@ -214,7 +214,8 @@
 
                     //reset이 true인지 false인지
                     if (reset) {
-                        while ($replyList.firstChild) { // .firstChild는 처음에 줄 값이 없으면 null을 리턴하는데 JavaScript는 null이 오면 false로 인식함.
+                        while ($replyList
+                            .firstChild) { // .firstChild는 처음에 줄 값이 없으면 null을 리턴하는데 JavaScript는 null이 오면 false로 인식함.
                             //값이 true일 때마다 실행 된다.
                             $replyList.firstChild.remove();
                         }
@@ -274,6 +275,190 @@
                 });
         } //end getList()
 
+        //댓글 수정, 삭제
+        //1. 수정
+        /*
+        document.querySelector('.replyModify').onclick = function(e) {
+            e.preventDefault(); //a 태그의 기능 죽이기
+            console.log('수정 버튼 클릭 이벤트 발생!');
+        } <- 이거 동작 안함!!
+
+        에러(NPE) 이유: .replyModify 요소는 실제 존재하는 요소가 아니라
+        비동기 통신을 통해 생성되는 요소입니다.
+        그러다 보니 이벤트가 등록되는 시점보다 fetch함수의 실행이 먼저 끝날 것이라는
+        보장이 없기 때문에 해당 방식은 이벤트 등록이 불가능합니다.
+        => .replyModify에 이벤트가 걸리는 시점에서 .replyModify가 완성이 된다는 보장이 없음(= fetch의 동작이 다 끝났다는 보장이 없음)
+        그래서  
+        긍까 처음부터 존재하는 요소가 아님. 윈도우가 랜더링이 되자마자 존재하는 애들이 아니란 소리
+        내가 비동기통신을 통해 받아온 데이터를 반복문을 통해서 처리하는데 저 처리가 끝나고 이벤트가 걸려야함.
+        근데 저 반복문 처리가 비동기 통신이기 때문에 완성 후에 이벤트가 걸린다는 보장이 없음
+        
+        해결: 저 반복문을 포함하고 있는 바깥 태그에 이벤트를 건다
+        => 부모 태그(실존하는 태그)에 이벤트를 걸어서 자식 요소에 이벤트를 전파한다.
+        => 정리: 이 때는 실제로 존재하는 #replyList(부모 태그)에 이벤트를 등록하고, 이벤트를 자식에게 위임하여
+        사용하는 addEventListener를 통해 처리해야 합니다. 
+        */
+        document.getElementById('replyList').addEventListener('click', e => {
+            e.preventDefault(); // 태그의 고유 기능을 중지.
+            //console.log('이벤트 발생뵤');
+
+            //1. 이벤트가 발생한 target이 a태그가 아니라면 이벤트 강제 종료.
+            //유의점: 다른 a태그도 있다면 클래스를 같이 지목해서 알려줘야 한다.
+            //예시) if(e.target.matches('a.right')) return;
+            if (!e.target.matches('a')) return;
+            console.log('a에만 이벤트 발생뵤');
+
+            //2. a태그가 2개(수정, 삭제)이므로 어떤 링크인지를 확인해야 한다.
+            //댓글이 여러 개 -> 수정과 삭제가 발생하는 댓글이 몇 번인지도 확인해야 한다.
+            const rno = e.target.getAttribute(
+            'href'); //이벤트 타겟의 속성을 얻어왔음.QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQ
+            console.log('댓글 번호: ', rno);
+            //모달 내부에 숨겨진 input 태그에 댓글 번호를 달아주자.
+            document.getElementById('modalRno').value = rno;
+
+            //댓글 내용도 가져와서 모달에 뿌려주자.
+            //부모 태그의 다음 형제 요소. 의 textContent를 가져온다.
+            const content = e.target.parentNode.nextElementSibling.textContent;
+            console.log('댓글 내용: ', content);
+
+            //3. 모달 창 하나를 이용해서 상황에 맞게 수정 / 삭제 모달을 제공해야 한다.
+            //조건문을 작성하겠습니다. (수정 or 삭제에 따라 모달 디자인을 조정)
+            if (e.target.classList.contains('replyModify')) { // e.target -> a태그
+                // e.target(= a태그).classList: a태그가 가지고 있는 모든 요소들을 arrayList형태로 가져옴.
+                //수정 버튼을 눌렀으므로 수정 모달 형식으로 꾸며주겠다.
+                document.querySelector('.modal-title').textContent = '댓글 수정';
+                document.getElementById('modalReply').style.display = 'inline';
+                document.getElementById('modalReply').value = content; //위에서 얻어온 댓글 내용
+                document.getElementById('modalModBtn').style.display = 'inline';
+                document.getElementById('modalDelBtn').style.display = 'none';
+
+                //어쩔 수 없이 jQuery를 이용하여 bootstrap 모달을 여는 방법.
+                $('#replyModal').modal('show'); //show: 모달 창 보여주기
+
+            } else { //삭제 버튼을 누른 경우
+                document.querySelector('.modal-title').textContent = '댓글 삭제';
+                document.getElementById('modalReply').style.display = 'none'; //수정 창을 보여줄 필요가 없어서 none
+                document.getElementById('modalModBtn').style.display = 'none';
+                document.getElementById('modalDelBtn').style.display = 'inline';
+                $('#replyModal').modal('show');
+
+            }
+        }); // 수정 or 삭제 버튼 클릭 이벤트 끝!
+
+        //수정 처리 함수.(수정 모달을 열어서 수정 내용을 작성한 후 수정 버튼을 클릭했을 때)
+        document.getElementById('modalModBtn').onclick = () => {
+            //서버에게 수정내용과 비밀번호를 보내야 한다. + hidden 타입으로 숨겨놓은 rno(댓글 번호)도 보내야함
+
+            const reply = document.getElementById('modalReply').value; // textarea내용
+            const rno = document.getElementById('modalRno').value;
+            const replyPw = document.getElementById('modalPw').value;
+            //ModBtn이 클릭되었을 때 value값들을 가져오겠다!
+
+            if (reply === '' || replyPw === '') { //검사
+                alert('내용과 비밀번호를 확인하세요!');
+                return;
+            }
+
+            //요청에 관련된 정보 객체
+            const reqObj = {
+                method: 'put', //rest 방식 중 하나
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    'replyText': reply,
+                    'replyPw': replyPw
+                    //글 번호는 url에 뭍혀서 보낼거임.
+                })
+            };
+
+            fetch('${pageContext.request.contextPath}/reply/' + rno, reqObj)
+                .then(res => res.text())
+                .then(data => {
+                    if (data === 'pwFail') {
+                        alert('비밀번호를 확인해주세요!');
+                        document.getElementById('modalPw').value = ''; //비번 입력칸 초기화
+                        document.getElementById('modalPw').focus(); //작성하라고 focus()
+                    } else {
+                        alert('댓글 수정이 완료되었습니다!');
+                        //비동기 통신이어서 모달 창이 계속 열려있을 것임.
+                        //먼저 모달 창에 적혀있는 값들을 지워주자!
+                        document.getElementById('modalReply').value = '';
+                        document.getElementById('modalPw').value = '';
+
+                        //제이쿼리 문법으로 bootstarp 모달 닫아주기
+                        $('#replyModal').modal('hide');
+                        getList(1, true); //창 닫고 다시 1 페이지부터 보여주기
+                    }
+                });
+        } // end update event
+
+        //요청에 관련된 정보 객체
+        const reqObj = {
+            method: 'put', //rest 방식 중 하나
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                'replyText': reply,
+                'replyPw': replyPw
+                //글 번호는 url에 뭍혀서 보낼거임.
+            })
+        };
+
+        //삭제 이벤트
+        document.getElementById('modalDelBtn').onclick = () => {
+            /*
+            1. 모달창에 rno값, replyPw 값을 얻습니다.
+
+            2. fetch 함수를 이용해서 DELETE 방식으로 reply/{rno} 요청
+
+            3. 서버에서는 요청을 받아서 비밀번호를 확인하고, 비밀번호가 맞으면
+             삭제를 진행하시면 됩니다.
+
+            4. 만약 비밀번호가 틀렸다면, 문자열을 반환해서
+            '비밀번호가 틀렸습니다.' 경고창을 띄우세요.
+
+            삭제 완료되면 모달 닫고 목록 요청 다시 보내세요. (reset의 여부를 잘 판단)
+            */
+
+            const rno = document.getElementById('modalRno').value;
+            const replyPw = document.getElementById('modalPw').value;
+            console.log('화면단에서 비밀번호 가져가요오 ', replyPw);
+
+            if(replyPw === ''){ //비번 입력 검사
+                alert('비밀번호를 입력하세요!');
+                return;
+            }
+
+            fetch('${pageContext.request.contextPath}/reply/' + rno, {
+                method: 'delete',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body : replyPw
+            })    
+            .then(res => res.text())
+            .then(data => {
+                if(data === 'deleteFail'){
+                    alert('비밀번호 입력 오류: 데이터 삭제 실패!');
+                    document.getElementById('modalPw').value = '';
+                    document.getElementById('modalPw').focus();
+                }else{
+                    alert('댓글이 삭제되었습니다.');
+                    // + 모달 정리
+                    document.getElementById('modalPw').value = '';
+                    $('#replyModal').modal('hide');
+                    getList(1, true);
+                }
+            })
+
+        } // end delete event
+
+
+
+
+
         //댓글 날짜 변환 함수
         //등록 날짜가 최신이면 -> 방금전, 1시간 전
         function parseTime(regDate) {
@@ -299,6 +484,8 @@
             } else {
                 time = `\${regTime.getFullYear()}년 \${regTime.getMonth()+1}월 \${regTime.getDate()}일`;
             }
+
+            if (regDate.includes('(수정됨)')) return time + '(수정됨)';
 
             return time;
 

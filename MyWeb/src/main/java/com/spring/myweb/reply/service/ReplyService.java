@@ -10,7 +10,8 @@ import org.springframework.stereotype.Service;
 
 import com.spring.myweb.freeboard.dto.page.Page;
 import com.spring.myweb.reply.dto.ReplyListResponseDTO;
-import com.spring.myweb.reply.dto.ReplyRegistDTO;
+import com.spring.myweb.reply.dto.ReplyRequestDTO;
+import com.spring.myweb.reply.dto.ReplyUpdateRequestDTO;
 import com.spring.myweb.reply.entity.Reply;
 import com.spring.myweb.reply.mapper.IReplyMapper;
 
@@ -26,7 +27,7 @@ public class ReplyService implements IReplyService {
 	
 	
 	@Override
-	public void replyRegist(ReplyRegistDTO dto) {
+	public void replyRegist(ReplyRequestDTO dto) {
 		dto.setReplyPw(encoder.encode(dto.getReplyPw())); //비밀번호 암호화
 		mapper.replyRegist(dto.toEntity(dto));
 	}
@@ -71,15 +72,29 @@ public class ReplyService implements IReplyService {
 	}
 
 	@Override
-	public void update(Reply reply) {
-		// TODO Auto-generated method stub
-
+	public String update(ReplyUpdateRequestDTO dto) {
+		//비밀번호 일치하는지 검사 먼저 해줘야함 -> encoder사용
+		System.out.println(dto.getReplyNo());
+		System.out.println(dto.getReplyPw());
+		if(encoder.matches(dto.getReplyPw(), mapper.pwCheck(dto.getReplyNo()))) {
+			//일치할 때 -> update
+			mapper.update(dto.toEntity(dto));
+			return "updateSuccess";
+		}else {
+			//불일치 -> return
+			return "pwFail";
+		}
+		
 	}
 
 	@Override
-	public void delete(int rno) {
-		// TODO Auto-generated method stub
-
+	public String delete(int rno, String replyPw) {
+		if(encoder.matches(replyPw, mapper.pwCheck(rno))) {
+			mapper.delete(rno);
+			return "deleteSuccess";
+		}else {
+			return "deleteFail";
+		}
 	}
 
 }

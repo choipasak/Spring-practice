@@ -5,15 +5,18 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.spring.myweb.reply.dto.ReplyListResponseDTO;
-import com.spring.myweb.reply.dto.ReplyRegistDTO;
+import com.spring.myweb.reply.dto.ReplyRequestDTO;
+import com.spring.myweb.reply.dto.ReplyUpdateRequestDTO;
 import com.spring.myweb.reply.service.IReplyService;
 
 import lombok.RequiredArgsConstructor;
@@ -29,7 +32,7 @@ public class ReplyController {
 	//댓글 등록 요청
 	//화면에서 요청을 비동기 POST요청으로 /reply만 했는데 어떻게 받게 될까 ->
 	@PostMapping()
-	public String replyRegist(@RequestBody ReplyRegistDTO dto) {
+	public String replyRegist(@RequestBody ReplyRequestDTO dto) {
 		
 		System.out.println("댓글 등록 요청 들어옴!" + dto);
 		service.replyRegist(dto);
@@ -62,6 +65,21 @@ public class ReplyController {
 		map.put("total", total);
 		
 		return map;
+	}
+	
+	//댓글 수정 요청
+	@PutMapping("/{rno}")
+	public String update(@PathVariable int rno, @RequestBody ReplyUpdateRequestDTO dto) {
+		dto.setReplyNo(rno);
+		System.out.println(dto.getReplyPw());
+		return service.update(dto); //service단에서 비번 검증해서 리턴 해 주기 때문에 바로 리턴
+	}
+	
+	//댓글 삭제 요청
+	@DeleteMapping("/{rno}")
+	public String delete(@PathVariable int rno, @RequestBody String replyPw) {
+		System.out.println("서버에서 받은 비밀번호-> " + replyPw);
+		return service.delete(rno, replyPw);
 	}
 	
 }

@@ -3,13 +3,13 @@ package com.spring.myweb.reply.service;
 import java.util.List;
 
 import com.spring.myweb.reply.dto.ReplyListResponseDTO;
-import com.spring.myweb.reply.dto.ReplyRegistDTO;
-import com.spring.myweb.reply.entity.Reply;
+import com.spring.myweb.reply.dto.ReplyRequestDTO;
+import com.spring.myweb.reply.dto.ReplyUpdateRequestDTO;
 
 public interface IReplyService {
 
 	//댓글 등록
-	void replyRegist(ReplyRegistDTO dto);
+	void replyRegist(ReplyRequestDTO dto);
 
 	//댓글 목록 요청 -> 몇번 째 게시물의 댓글인지
 	List<ReplyListResponseDTO> getList(int bno, int pageNum);
@@ -21,10 +21,10 @@ public interface IReplyService {
 	String pwCheck(int rno);
 
 	//댓글 수정
-	void update(Reply reply);
+	String update(ReplyUpdateRequestDTO dto);
 
 	//댓글 삭제
-	void delete(int rno);
+	String delete(int rno, String replyPw);
 
 
 }

@@ -15,21 +15,19 @@ import lombok.ToString;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ReplyRegistDTO {
-	
-	//JS에서 작성해 준 값(property)의 변수명과 똑같이 맞춰야 값을 JSON에서 가져올 수 있음.
-	private int bno;
-	private String replyText;
-	private String replyId;
+public class ReplyUpdateRequestDTO {
+
+	private int replyNo;
 	private String replyPw;
+	private String replyText;
 	
-	public Reply toEntity(ReplyRegistDTO dto) {
+	//자기 자신을 Entity화 시키는 메서드
+	public Reply toEntity(ReplyUpdateRequestDTO dto) {
 		return Reply.builder()
-			 .bno(dto.getBno())
-			 .replyText(dto.getReplyText())
-			 .replyWriter(dto.getReplyId())
-			 .replyPw(dto.getReplyPw())
-			 .build();
+					.replyNo(this.replyNo)
+					.replyPw(this.replyPw)
+					.replyText(this.replyText)
+					.build();
 	}
 	
 	
