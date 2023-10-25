@@ -4,28 +4,34 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.myweb.snsboard.dto.SnsBoardRequestDTO;
 import com.spring.myweb.snsboard.dto.SnsBoardResponseDTO;
-import com.spring.myweb.snsboard.entity.SnsBoard;
 import com.spring.myweb.snsboard.service.SnsServiceBoard;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/snsboard")
 @RequiredArgsConstructor
+@Slf4j
 public class SnsBoardController {
 
 	private final SnsServiceBoard service;
@@ -53,7 +59,7 @@ public class SnsBoardController {
 
 	@GetMapping("/{page}")
 	public List<SnsBoardResponseDTO> getList(@PathVariable int page) { //()생략 가능: 변수명=매개변수명
-		System.out.println("/snsboard/getList: GET!");
+		log.info("/snsboard/getList: GET!");
 		return service.getList(page); // List를 리턴
 	}
 
@@ -66,11 +72,11 @@ public class SnsBoardController {
 	 */
 	@GetMapping("/display/{fileLoca}/{fileName}")
 	public ResponseEntity<?> getImage(@PathVariable String fileLoca,@PathVariable String fileName) {
-		System.out.println("fileLoca | 파일경로 : " + fileLoca);
-		System.out.println("fileName | 파일이름 : " + fileName);
+		log.info("fileLoca | 파일경로 : " + fileLoca);
+		log.info("fileName | 파일이름 : {}", fileName); //값을 여러 개 주고 싶다면 들어갈 자리에 {}작성 -> 값을 차례로 ,값 으로 주기!
 		
 		File file = new File("C:/test/upload/" + fileLoca + "/" + fileName);
-		System.out.println("풀 파일경로: " + file.toString()); // 완성된 경로
+		log.info("풀 파일경로: " + file.toString()); // 완성된 경로
 		
 		//응답에 대한 여러가지 정보를 전달할 수 있는 객체 ResponseEntity
 		//응답 내용, 응답이 성공했는지에 대한 여부, 응답에 관련된 여러 설정들을 지원합니다.
@@ -150,21 +156,66 @@ public class SnsBoardController {
 	//글 상세보기 요청!
 	@GetMapping("/content/{bno}")
 	public SnsBoardResponseDTO content(@PathVariable int bno) {
-		service.getContent(bno);
-		System.out.println("누른 사진 번호: " + bno);
 		
+		
+		
+		//내가 한 버전
 		SnsBoardResponseDTO resdto = service.getContent(bno);
+		//System.out.println("누른 사진 번호: " + resdto);
 		
-		//ResponseEntity<byte[]> result = null;
-		
-		//HttpHeaders header = new HttpHeaders();
-		//header.add("content", resdto.getContent());
+		//방법 2번 : responseEntity사용
+		//return ResponseEntity.ok().body(service.getContent(bno)); -> 메서드 타입도 바꿔줘야함.
 		
 		return resdto;
+	}
+	
+	//글 삭제하기 요청
+	@DeleteMapping("/{bno}")
+	public ResponseEntity<?> delete(@PathVariable int bno, HttpSession session) {
+		System.out.println("삭제버튼 글 번호: " + bno);
+	
 		
+		//return service.delete(bno); -> ㄴㅐ가 한 것
+		
+		String id = (String) session.getAttribute("login"); // 로그인 하고 있는 사용자 뽑기.
+		SnsBoardResponseDTO dto = service.getContent(bno);
+		if(id == null || !id.equals(dto.getWriter())) { // 이 조건이 trun -> 권한X
+			//return "noAuth";
+			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+		}
+		service.delete(bno);
+		//글 삭제 -> 이미지도 존재할 필요 X
+		//이미지도 함께 삭제 해 주셔야 합니다.
+		//File 객체 생성 -> 생성자에 지우고자 하는 파일의 경로 지정
+		//메서드 delete() -> return type이 boolean. 삭제 성공시 true, 실패 시 false.
+		//글번호를 이용! -> 상세보기
+		File file = new File(dto.getUploadPath() + "/" + dto.getFileName());
+		System.out.println("확인한다");
+		System.out.println(dto.getUploadPath());
+		System.out.println(dto.getFileLoca());
+		System.out.println(dto.getFileName());
+		return file.delete()
+				? ResponseEntity.status(HttpStatus.OK).build()
+				: ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build(); // 리턴타입 boolean
+	}
+	
+	
+	//좋아요 버튼 클릭 처리
+	@PostMapping("/like")
+	public String likeConfirm(@RequestBody Map<String, String> params) {
+		log.info("/like: POST, params : {}", params);
+		
+		return service.searchLike(params);
 		
 	}
-
+	
+	
+	//회원이 글 목록으로 진입 시 좋아요 게시물 리스트 체크
+	@GetMapping("/likeList/{userId}")
+	public List<Integer> likeList(@PathVariable String userId) {
+		log.info("/snsboard/likeList: GET, userId: {}", userId);
+		return service.likeList(userId);
+	}
 
 }
 

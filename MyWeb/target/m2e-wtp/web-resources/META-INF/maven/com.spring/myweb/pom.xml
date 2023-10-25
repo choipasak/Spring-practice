@@ -224,6 +224,19 @@
 			<version>2.11.0</version>
 		</dependency>
 
+		<!-- log4jdbc-log4j2-jdbc4.1 (DB log 출력하게 해주는 라이브러리다!) -->
+		<dependency>
+			<groupId>org.bgee.log4jdbc-log4j2</groupId>
+			<artifactId>log4jdbc-log4j2-jdbc4.1</artifactId>
+			<version>1.16</version>
+		</dependency>
+
+		<!-- json.simple: 문자열을 JSON으로 변환 해 주는 라이브러리 -->
+		<dependency>
+			<groupId>com.googlecode.json-simple</groupId>
+			<artifactId>json-simple</artifactId>
+			<version>1.1.1</version>
+		</dependency>
 
 
 

@@ -21,6 +21,7 @@ public class SnsBoardResponseDTO {
 	//private String fileRealName; 원본파일명
 	private String content;
 	private String regDate;
+	private int likeCnt;
 	
 	
 	public SnsBoardResponseDTO(SnsBoard board) {
@@ -33,6 +34,7 @@ public class SnsBoardResponseDTO {
 		this.content = board.getContent();
 		this.regDate = makePrettierDateString(board.getRegDate());
 		System.out.println(regDate);
+		this.likeCnt = board.getLikeCnt();
 	}
 	
     String makePrettierDateString(LocalDateTime regDate) {
