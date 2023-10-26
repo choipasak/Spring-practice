@@ -37,7 +37,40 @@
         <button type="button" id="sendBtn">요청!</button>
     </form>
 
+    <button id="sendBtn2" type="button">위치 정보 전송!</button>
+
     <script>
+
+        //위치정보동의o -> 성공 시 실행할 콜 백 함수 getCurrentPosition()의 안에서 바로 작성 가능하지만 처음이여서 따로 함수 선언
+        function success(position){ // 밑의 getCurrentPosition()가 실행되는 순간 position(위도 경도 담은 데이터)가 전달되면서 실행
+            console.log(position);
+            console.log('현재 위치의 위도: ', position.coords.latitude);
+            console.log('현재 위치의 경도: ', position.coords.longitude);
+        }
+
+        //위치정보동의X -> 실패 시 실행 할 콜 백 함수
+        function fail(error){
+            alert('위치 정보를 얻는 데 실패했습니다. 위치 정보를 승인해 주세요.');
+            console.log(error);
+        }
+
+        //밑의 함수처럼 작동하게 안하고 버튼이 눌리자마자 함수들이 실행되게 할래
+        document.getElementById('sendBtn2').onclick = function(){
+            navigator.geolocation.getCurrentPosition(success, fail);
+            
+        }
+
+
+        /*
+        (function() {
+            //화면에 진입 시 즉시 실행되게 하는 함수.
+            
+            //getCurrentPosition(위치 정보 승인 시 실행할 함수, 실패했을 시 실행할 함수) -> 매개 값 2개 받음, 콜 백 함수
+            navigator.geolocation.getCurrentPosition();
+        })();
+        */
+
+
         document.getElementById('sendBtn').onclick = function () {
             const $area1 = document.querySelector('select[name=h_area1]');
             const $area2 = document.querySelector('select[name=h_area2]');
